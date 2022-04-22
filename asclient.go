@@ -2,6 +2,8 @@ package asclient
 
 import (
 	"encoding/json"
+	"fmt"
+	"net/url"
 	"path/filepath"
 
 	"github.com/go-resty/resty/v2"
@@ -33,23 +35,40 @@ func NewAPIClient(config ASpaceAPIConfig) ASpaceAPIClient {
 	}
 }
 
-func (client *ASpaceAPIClient) BuildUrl(path []string) string {
-	return client.CFG.URL + "/" + filepath.Join(path...)
+func (client *ASpaceAPIClient) BuildUrl(path string) (string, error) {
+	rawUrl := client.CFG.URL + "/" + path
+	u, err := url.Parse(rawUrl)
+
+	if err != nil {
+		return fmt.Sprintf("Unable to parse request URL: %s", rawUrl), err
+	}
+	return u.String(), nil
 }
 
 func (client *ASpaceAPIClient) Login() (string, error) {
-	path := client.BuildUrl([]string{"users", client.CFG.Username, "login"})
-
-	resp, _ := client.API.R().
-		SetHeaders(client.Headers).
-		SetQueryParams(map[string]string{
+	resp, _ := client.Post(
+		filepath.Join("users", client.CFG.Username, "login"),
+		"{}",
+		map[string]string{
 			"password": client.CFG.Password,
-		}).
-		Post(path)
+		},
+	)
 
 	session := ASpaceAPISessionResponse{}
 	json.Unmarshal(resp.Body(), &session)
 
 	client.Headers["X-ArchivesSpace-Session"] = session.Token
 	return session.Token, nil
+}
+
+func (client *ASpaceAPIClient) Post(path string, payload string, params map[string]string) (*resty.Response, error) {
+	url, _ := client.BuildUrl(path)
+
+	resp, _ := client.API.R().
+		SetHeaders(client.Headers).
+		SetBody(payload).
+		SetQueryParams(params).
+		Post(url)
+
+	return resp, nil
 }

@@ -1,4 +1,4 @@
-module github.com/mark-cooper/asclient
+module github.com/mark-cooper/go-asclient/asclient
 
 require github.com/go-resty/resty/v2 v2.7.0
 
