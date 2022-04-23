@@ -17,11 +17,23 @@ func (client *ASpaceAPIClient) BuildUrl(path string) (string, error) {
 	return u.String(), nil
 }
 
+func (client *ASpaceAPIClient) Get(path string, params map[string]string) (*resty.Response, error) {
+	url, _ := client.BuildUrl(path)
+
+	resp, err := client.API.R().
+		SetHeaders(client.Headers).
+		SetQueryParams(params).
+		Get(url)
+
+	return resp, err
+}
+
 func (client *ASpaceAPIClient) Post(path string, payload string, params map[string]string) (*resty.Response, error) {
 	url, _ := client.BuildUrl(path)
 
 	resp, err := client.API.R().
 		SetHeaders(client.Headers).
+		SetContentLength(true).
 		SetBody(payload).
 		SetQueryParams(params).
 		Post(url)

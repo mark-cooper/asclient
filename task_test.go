@@ -17,7 +17,7 @@ func Test_ASpaceAPIClient_Login_Success(t *testing.T) {
 	_, err := client.Login()
 
 	if err != nil {
-		t.Errorf(err.Error())
+		t.Fatal(err.Error())
 	}
 
 	assert.Contains(t, client.Headers, "X-ArchivesSpace-Session")
