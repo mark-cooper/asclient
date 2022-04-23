@@ -26,3 +26,14 @@ func Test_ASpaceAPIClient_Get_Success(t *testing.T) {
 
 	assert.Contains(t, resp.String(), "lock_version")
 }
+
+// func Test_ASpaceAPIClient_CRUD(t *testing.T) {
+
+// 	cfg := ASpaceAPIConfig{
+// 		URL:      "https://test.archivesspace.org/staff/api",
+// 		Username: "admin",
+// 		Password: "admin",
+// 	}
+// 	client := NewAPIClient(cfg)
+// 	client.Login()
+// }
