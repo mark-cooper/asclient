@@ -1,6 +1,7 @@
 package asclient
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/url"
 
@@ -14,6 +15,18 @@ type PayLoadRequest struct {
 	Params  map[string]string
 }
 
+type QueryParams struct {
+	AllIds             string `json:"all_ids,omitempty"`
+	IdSet              string `json:"id_set,omitempty"`
+	IncludeDAOS        string `json:"include_daos,omitempty"`
+	IncludeUnpublished string `json:"include_unpublished,omitempty"`
+	ModifiedSince      string `json:"modified_since,omitempty"`
+	NumberedCS         string `json:"numbered_cs,omitempty"`
+	Page               string `json:"page,omitempty"`
+	Password           string `json:"password,omitempty"`
+	PrintPDF           string `json:"print_pdf,omitempty"`
+}
+
 func (client *ASpaceAPIClient) BuildUrl(path string) (string, error) {
 	rawUrl := client.CFG.URL + "/" + path
 	u, err := url.Parse(rawUrl)
@@ -22,6 +35,13 @@ func (client *ASpaceAPIClient) BuildUrl(path string) (string, error) {
 		return fmt.Sprintf("Unable to parse request URL: %s", rawUrl), err
 	}
 	return u.String(), nil
+}
+
+func (client *ASpaceAPIClient) ConvertParams(params QueryParams) (map[string]string, error) {
+	var queryStringParams map[string]string
+	data, _ := json.Marshal(params)
+	json.Unmarshal(data, &queryStringParams)
+	return queryStringParams, nil
 }
 
 func (client *ASpaceAPIClient) Delete(path string) (*resty.Response, error) {
@@ -34,34 +54,39 @@ func (client *ASpaceAPIClient) Delete(path string) (*resty.Response, error) {
 	return resp, err
 }
 
-func (client *ASpaceAPIClient) Get(path string, params map[string]string) (*resty.Response, error) {
+func (client *ASpaceAPIClient) Get(path string, params QueryParams) (*resty.Response, error) {
 	url, _ := client.BuildUrl(path)
+	queryStringParams, _ := client.ConvertParams(params)
 
 	resp, err := client.API.R().
 		SetHeaders(client.Headers).
-		SetQueryParams(params).
+		SetQueryParams(queryStringParams).
 		Get(url)
 
 	return resp, err
 }
 
-func (client *ASpaceAPIClient) Post(path string, payload string, params map[string]string) (*resty.Response, error) {
+func (client *ASpaceAPIClient) Post(path string, payload string, params QueryParams) (*resty.Response, error) {
+	queryStringParams, _ := client.ConvertParams(params)
+
 	resp, err := client.RequestWithPayload(PayLoadRequest{
 		Method:  "POST",
 		Path:    path,
 		Payload: payload,
-		Params:  params,
+		Params:  queryStringParams,
 	})
 
 	return resp, err
 }
 
-func (client *ASpaceAPIClient) Put(path string, payload string, params map[string]string) (*resty.Response, error) {
+func (client *ASpaceAPIClient) Put(path string, payload string, params QueryParams) (*resty.Response, error) {
+	queryStringParams, _ := client.ConvertParams(params)
+
 	resp, err := client.RequestWithPayload(PayLoadRequest{
 		Method:  "PUT",
 		Path:    path,
 		Payload: payload,
-		Params:  params,
+		Params:  queryStringParams,
 	})
 
 	return resp, err

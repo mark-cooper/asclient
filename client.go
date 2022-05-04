@@ -1,6 +1,9 @@
 package asclient
 
 import (
+	"strconv"
+	"time"
+
 	"github.com/go-resty/resty/v2"
 )
 
@@ -18,6 +21,12 @@ type ASpaceAPIConfig struct {
 
 type ASpaceAPISessionResponse struct {
 	Token string `json:"session"`
+}
+
+func ModifiedSince(duration time.Duration) string {
+	t := time.Now()
+	timestamp := t.Add(-duration).Unix()
+	return strconv.FormatInt(timestamp, 10)
 }
 
 func NewAPIClient(config ASpaceAPIConfig) ASpaceAPIClient {

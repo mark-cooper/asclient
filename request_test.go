@@ -15,7 +15,7 @@ func Test_ASpaceAPIClient_Get_Success(t *testing.T) {
 		Password: "admin",
 	}
 	client := NewAPIClient(cfg)
-	resp, err := client.Get("repositories/2", map[string]string{})
+	resp, err := client.Get("repositories/2", QueryParams{})
 
 	if err != nil {
 		t.Fatal(err.Error())
@@ -48,7 +48,7 @@ func Test_ASpaceAPIClient_CRUD(t *testing.T) {
 		Publish:        false,
 	}
 	bytes, _ := json.Marshal(repository)
-	resp, err := client.Post("repositories", string(bytes), map[string]string{})
+	resp, err := client.Post("repositories", string(bytes), QueryParams{})
 
 	if err != nil {
 		t.Fatal(err.Error())
@@ -63,7 +63,7 @@ func Test_ASpaceAPIClient_CRUD(t *testing.T) {
 
 	repository.Name = "ASCLIENT TEST ARCHIVE"
 	bytes, _ = json.Marshal(repository)
-	resp, err = client.Post(repository.URI, string(bytes), map[string]string{})
+	resp, err = client.Post(repository.URI, string(bytes), QueryParams{})
 
 	if err != nil {
 		t.Fatal(err.Error())

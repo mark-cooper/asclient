@@ -10,9 +10,7 @@ func (client *ASpaceAPIClient) Login() (string, error) {
 	resp, err := client.Post(
 		filepath.Join("users", client.CFG.Username, "login"),
 		"{}",
-		map[string]string{
-			"password": client.CFG.Password,
-		},
+		QueryParams{Password: client.CFG.Password},
 	)
 
 	if err != nil {
