@@ -43,9 +43,9 @@ func Test_ASpaceAPIClient_CRUD(t *testing.T) {
 	client.Login()
 
 	repository := Repository{
-		RepositoryCode: "asclient_test",
-		Name:           "ASCLIENT TEST",
-		Publish:        false,
+		RepoCode: "asclient_test",
+		Name:     "ASCLIENT TEST",
+		Publish:  false,
 	}
 	bytes, _ := json.Marshal(repository)
 	resp, err := client.Post("repositories", string(bytes), QueryParams{})

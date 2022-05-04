@@ -6,6 +6,23 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func Test_ASpaceAPIClient_GetRepositoryByCode(t *testing.T) {
+
+	cfg := APIConfig{
+		URL:      "https://test.archivesspace.org/staff/api",
+		Username: "admin",
+		Password: "admin",
+	}
+	client := NewAPIClient(cfg)
+	repository, err := client.GetRepositoryByCode("YNHSC")
+
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+
+	assert.Equal(t, "YNHSC", repository.RepoCode)
+}
+
 func Test_ASpaceAPIClient_Login_Success(t *testing.T) {
 
 	cfg := APIConfig{
