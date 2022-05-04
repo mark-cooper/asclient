@@ -12,7 +12,7 @@ type PayLoadRequest struct {
 	Method  string
 	Path    string
 	Payload string
-	Params  map[string]string
+	Params  QueryParams
 }
 
 type QueryParams struct {
@@ -67,26 +67,22 @@ func (client *APIClient) Get(path string, params QueryParams) (*resty.Response, 
 }
 
 func (client *APIClient) Post(path string, payload string, params QueryParams) (*resty.Response, error) {
-	queryStringParams, _ := client.ConvertParams(params)
-
 	resp, err := client.RequestWithPayload(PayLoadRequest{
 		Method:  "POST",
 		Path:    path,
 		Payload: payload,
-		Params:  queryStringParams,
+		Params:  params,
 	})
 
 	return resp, err
 }
 
 func (client *APIClient) Put(path string, payload string, params QueryParams) (*resty.Response, error) {
-	queryStringParams, _ := client.ConvertParams(params)
-
 	resp, err := client.RequestWithPayload(PayLoadRequest{
 		Method:  "PUT",
 		Path:    path,
 		Payload: payload,
-		Params:  queryStringParams,
+		Params:  params,
 	})
 
 	return resp, err
@@ -94,12 +90,13 @@ func (client *APIClient) Put(path string, payload string, params QueryParams) (*
 
 func (client *APIClient) RequestWithPayload(request PayLoadRequest) (*resty.Response, error) {
 	url, _ := client.BuildUrl(request.Path)
+	queryStringParams, _ := client.ConvertParams(request.Params)
 
 	resp, err := client.API.R().
 		SetHeaders(client.Headers).
 		SetContentLength(true).
 		SetBody(request.Payload).
-		SetQueryParams(request.Params).
+		SetQueryParams(queryStringParams).
 		Execute(request.Method, url)
 
 	return resp, err
