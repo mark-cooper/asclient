@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 )
 
-func (client *ASpaceAPIClient) Login() (string, error) {
+func (client *APIClient) Login() (string, error) {
 	resp, err := client.Post(
 		filepath.Join("users", client.CFG.Username, "login"),
 		"{}",
@@ -21,7 +21,7 @@ func (client *ASpaceAPIClient) Login() (string, error) {
 		return "ASpaceAPIClient login error", errors.New(string(resp.Body()))
 	}
 
-	session := ASpaceAPISessionResponse{}
+	session := APISessionResponse{}
 	json.Unmarshal(resp.Body(), &session)
 
 	client.Headers["X-ArchivesSpace-Session"] = session.Token

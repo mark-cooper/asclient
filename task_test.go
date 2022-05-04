@@ -8,7 +8,7 @@ import (
 
 func Test_ASpaceAPIClient_Login_Success(t *testing.T) {
 
-	cfg := ASpaceAPIConfig{
+	cfg := APIConfig{
 		URL:      "https://test.archivesspace.org/staff/api",
 		Username: "admin",
 		Password: "admin",
@@ -26,7 +26,7 @@ func Test_ASpaceAPIClient_Login_Success(t *testing.T) {
 
 func Test_ASpaceAPIClient_Login_Fail_Bad_Path(t *testing.T) {
 
-	cfg := ASpaceAPIConfig{
+	cfg := APIConfig{
 		URL:      "https://test.archivesspace.org/staff/api/xyz",
 		Username: "admin",
 		Password: "admin",
@@ -40,7 +40,7 @@ func Test_ASpaceAPIClient_Login_Fail_Bad_Path(t *testing.T) {
 
 func Test_ASpaceAPIClient_Login_Fail_Bad_URI(t *testing.T) {
 
-	cfg := ASpaceAPIConfig{
+	cfg := APIConfig{
 		URL:      "xyzhttps://test.archivesspace.org/staff/api",
 		Username: "admin",
 		Password: "admin",
@@ -54,7 +54,7 @@ func Test_ASpaceAPIClient_Login_Fail_Bad_URI(t *testing.T) {
 
 func Test_ASpaceAPIClient_Login_Fail_Bad_URL(t *testing.T) {
 
-	cfg := ASpaceAPIConfig{
+	cfg := APIConfig{
 		URL:      "https://test.archivesspace.org/staff",
 		Username: "admin",
 		Password: "admin",

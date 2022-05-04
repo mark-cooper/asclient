@@ -7,19 +7,19 @@ import (
 	"github.com/go-resty/resty/v2"
 )
 
-type ASpaceAPIClient struct {
+type APIClient struct {
 	API     resty.Client
-	CFG     ASpaceAPIConfig
+	CFG     APIConfig
 	Headers map[string]string
 }
 
-type ASpaceAPIConfig struct {
+type APIConfig struct {
 	URL      string
 	Username string
 	Password string
 }
 
-type ASpaceAPISessionResponse struct {
+type APISessionResponse struct {
 	Token string `json:"session"`
 }
 
@@ -29,8 +29,8 @@ func ModifiedSince(duration time.Duration) string {
 	return strconv.FormatInt(timestamp, 10)
 }
 
-func NewAPIClient(config ASpaceAPIConfig) ASpaceAPIClient {
-	return ASpaceAPIClient{
+func NewAPIClient(config APIConfig) APIClient {
+	return APIClient{
 		API: *resty.New(),
 		CFG: config,
 		Headers: map[string]string{

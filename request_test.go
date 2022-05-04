@@ -9,7 +9,7 @@ import (
 
 func Test_ASpaceAPIClient_Get_Success(t *testing.T) {
 
-	cfg := ASpaceAPIConfig{
+	cfg := APIConfig{
 		URL:      "https://test.archivesspace.org/staff/api",
 		Username: "admin",
 		Password: "admin",
@@ -34,7 +34,7 @@ func Test_ASpaceAPIClient_Get_Success(t *testing.T) {
 
 func Test_ASpaceAPIClient_CRUD(t *testing.T) {
 
-	cfg := ASpaceAPIConfig{
+	cfg := APIConfig{
 		URL:      "https://test.archivesspace.org/staff/api",
 		Username: "admin",
 		Password: "admin",

@@ -27,7 +27,7 @@ type QueryParams struct {
 	PrintPDF           string `json:"print_pdf,omitempty"`
 }
 
-func (client *ASpaceAPIClient) BuildUrl(path string) (string, error) {
+func (client *APIClient) BuildUrl(path string) (string, error) {
 	rawUrl := client.CFG.URL + "/" + path
 	u, err := url.Parse(rawUrl)
 
@@ -37,14 +37,14 @@ func (client *ASpaceAPIClient) BuildUrl(path string) (string, error) {
 	return u.String(), nil
 }
 
-func (client *ASpaceAPIClient) ConvertParams(params QueryParams) (map[string]string, error) {
+func (client *APIClient) ConvertParams(params QueryParams) (map[string]string, error) {
 	var queryStringParams map[string]string
 	data, _ := json.Marshal(params)
 	json.Unmarshal(data, &queryStringParams)
 	return queryStringParams, nil
 }
 
-func (client *ASpaceAPIClient) Delete(path string) (*resty.Response, error) {
+func (client *APIClient) Delete(path string) (*resty.Response, error) {
 	url, _ := client.BuildUrl(path)
 
 	resp, err := client.API.R().
@@ -54,7 +54,7 @@ func (client *ASpaceAPIClient) Delete(path string) (*resty.Response, error) {
 	return resp, err
 }
 
-func (client *ASpaceAPIClient) Get(path string, params QueryParams) (*resty.Response, error) {
+func (client *APIClient) Get(path string, params QueryParams) (*resty.Response, error) {
 	url, _ := client.BuildUrl(path)
 	queryStringParams, _ := client.ConvertParams(params)
 
@@ -66,7 +66,7 @@ func (client *ASpaceAPIClient) Get(path string, params QueryParams) (*resty.Resp
 	return resp, err
 }
 
-func (client *ASpaceAPIClient) Post(path string, payload string, params QueryParams) (*resty.Response, error) {
+func (client *APIClient) Post(path string, payload string, params QueryParams) (*resty.Response, error) {
 	queryStringParams, _ := client.ConvertParams(params)
 
 	resp, err := client.RequestWithPayload(PayLoadRequest{
@@ -79,7 +79,7 @@ func (client *ASpaceAPIClient) Post(path string, payload string, params QueryPar
 	return resp, err
 }
 
-func (client *ASpaceAPIClient) Put(path string, payload string, params QueryParams) (*resty.Response, error) {
+func (client *APIClient) Put(path string, payload string, params QueryParams) (*resty.Response, error) {
 	queryStringParams, _ := client.ConvertParams(params)
 
 	resp, err := client.RequestWithPayload(PayLoadRequest{
@@ -92,7 +92,7 @@ func (client *ASpaceAPIClient) Put(path string, payload string, params QueryPara
 	return resp, err
 }
 
-func (client *ASpaceAPIClient) RequestWithPayload(request PayLoadRequest) (*resty.Response, error) {
+func (client *APIClient) RequestWithPayload(request PayLoadRequest) (*resty.Response, error) {
 	url, _ := client.BuildUrl(request.Path)
 
 	resp, err := client.API.R().

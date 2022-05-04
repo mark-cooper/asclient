@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	cfg := asclient.ASpaceAPIConfig{
+	cfg := asclient.APIConfig{
 		URL:      "https://test.archivesspace.org/staff/api",
 		Username: "admin",
 		Password: "admin",
