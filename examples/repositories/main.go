@@ -14,7 +14,7 @@ func main() {
 		Password: "admin",
 	}
 	client := asclient.NewAPIClient(cfg)
-	repository, err := client.GetRepositoryByCode("YNHSC")
+	repository, err := client.RepositoryByCode("YNHSC")
 
 	if err != nil {
 		fmt.Println(err)
