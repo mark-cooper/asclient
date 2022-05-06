@@ -39,19 +39,14 @@ func (client *APIClient) RepositoryByCode(Code string) (Repository, error) {
 		return Repository{}, errors.New(string(resp.Body()))
 	}
 
-	var repository Repository
 	var repositories Repositories
 	json.Unmarshal([]byte(resp.String()), &repositories)
 
 	for _, repo := range repositories {
 		if repo.RepoCode == Code {
-			repository = repo
+			return repo, nil
 		}
 	}
 
-	if repository == (Repository{}) {
-		return repository, errors.New("Repository not found")
-	}
-
-	return repository, nil
+	return Repository{}, errors.New("Repository not found")
 }
