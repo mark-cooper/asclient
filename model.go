@@ -1,10 +1,12 @@
 package asclient
 
+type Collection[T any] struct {
+	Records []T
+}
+
 type FingerPrinter interface {
 	FingerPrint() string
 }
-
-type Repositories []Repository
 
 type Repository struct {
 	LockVersion int    `json:"lock_version"`

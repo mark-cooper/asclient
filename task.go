@@ -32,7 +32,7 @@ func (client *APIClient) Login() (string, error) {
 	return session.Token, nil
 }
 
-func (client *APIClient) RepositoryByCode(Code string) (Repository, error) {
+func (client *APIClient) RepositoryByCode(code string) (Repository, error) {
 	resp, err := client.Get("repositories", QueryParams{})
 
 	if err != nil {
@@ -43,12 +43,12 @@ func (client *APIClient) RepositoryByCode(Code string) (Repository, error) {
 		return Repository{}, errors.New(string(resp.Body()))
 	}
 
-	var repositories Repositories
-	json.Unmarshal([]byte(resp.String()), &repositories)
+	var collection Collection[Repository]
+	json.Unmarshal([]byte(resp.String()), &collection.Records)
 
-	for _, repo := range repositories {
-		if client.Identify(repo) == Code {
-			return repo, nil
+	for _, record := range collection.Records {
+		if client.Identify(record) == code {
+			return record, nil
 		}
 	}
 
