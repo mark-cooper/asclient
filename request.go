@@ -2,6 +2,7 @@ package asclient
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/url"
 
@@ -37,6 +38,18 @@ func (client *APIClient) BuildUrl(path string) (string, error) {
 	return u.String(), nil
 }
 
+func (client *APIClient) CheckResponse(resp *resty.Response, err error) (*resty.Response, error) {
+	if err != nil {
+		return resp, err
+	}
+
+	if resp.StatusCode() != 200 {
+		return resp, errors.New(string(resp.Body()))
+	}
+
+	return resp, nil
+}
+
 func (client *APIClient) ConvertParams(params QueryParams) (map[string]string, error) {
 	var queryStringParams map[string]string
 	data, _ := json.Marshal(params)
@@ -51,7 +64,7 @@ func (client *APIClient) Delete(path string) (*resty.Response, error) {
 		SetHeaders(client.Headers).
 		Delete(url)
 
-	return resp, err
+	return client.CheckResponse(resp, err)
 }
 
 func (client *APIClient) Get(path string, params QueryParams) (*resty.Response, error) {
@@ -63,7 +76,7 @@ func (client *APIClient) Get(path string, params QueryParams) (*resty.Response, 
 		SetQueryParams(queryStringParams).
 		Get(url)
 
-	return resp, err
+	return client.CheckResponse(resp, err)
 }
 
 func (client *APIClient) Post(path string, payload string, params QueryParams) (*resty.Response, error) {
@@ -74,7 +87,7 @@ func (client *APIClient) Post(path string, payload string, params QueryParams) (
 		Params:  params,
 	})
 
-	return resp, err
+	return client.CheckResponse(resp, err)
 }
 
 func (client *APIClient) Put(path string, payload string, params QueryParams) (*resty.Response, error) {
@@ -85,7 +98,7 @@ func (client *APIClient) Put(path string, payload string, params QueryParams) (*
 		Params:  params,
 	})
 
-	return resp, err
+	return client.CheckResponse(resp, err)
 }
 
 func (client *APIClient) RequestWithPayload(request PayLoadRequest) (*resty.Response, error) {

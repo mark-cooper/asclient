@@ -18,11 +18,7 @@ func (client *APIClient) Login() (string, error) {
 	)
 
 	if err != nil {
-		return "ASpaceAPIClient request error", err
-	}
-
-	if resp.StatusCode() != 200 {
-		return "ASpaceAPIClient login error", errors.New(string(resp.Body()))
+		return "Login error", err
 	}
 
 	session := APISessionResponse{}
@@ -37,10 +33,6 @@ func (client *APIClient) RepositoryByCode(code string) (Repository, error) {
 
 	if err != nil {
 		return Repository{}, err
-	}
-
-	if resp.StatusCode() != 200 {
-		return Repository{}, errors.New(string(resp.Body()))
 	}
 
 	var collection Collection[Repository]

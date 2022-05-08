@@ -21,10 +21,6 @@ func Test_ASpaceAPIClient_Get_Success(t *testing.T) {
 		t.Fatal(err.Error())
 	}
 
-	if resp.StatusCode() != 200 {
-		t.Fatal(resp.String())
-	}
-
 	var repository Repository
 	json.Unmarshal([]byte(resp.String()), &repository)
 
@@ -54,10 +50,6 @@ func Test_ASpaceAPIClient_CRUD(t *testing.T) {
 		t.Fatal(err.Error())
 	}
 
-	if resp.StatusCode() != 200 {
-		t.Fatal(resp.String())
-	}
-
 	json.Unmarshal([]byte(resp.String()), &repository)
 	assert.Equal(t, "ASCLIENT TEST", repository.Name)
 
@@ -67,10 +59,6 @@ func Test_ASpaceAPIClient_CRUD(t *testing.T) {
 
 	if err != nil {
 		t.Fatal(err.Error())
-	}
-
-	if resp.StatusCode() != 200 {
-		t.Fatal(resp.String())
 	}
 
 	json.Unmarshal([]byte(resp.String()), &repository)
