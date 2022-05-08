@@ -6,6 +6,10 @@ import (
 	"path/filepath"
 )
 
+func (client *APIClient) Identify(record FingerPrinter) string {
+	return record.FingerPrint()
+}
+
 func (client *APIClient) Login() (string, error) {
 	resp, err := client.Post(
 		filepath.Join("users", client.CFG.Username, "login"),
@@ -43,7 +47,7 @@ func (client *APIClient) RepositoryByCode(Code string) (Repository, error) {
 	json.Unmarshal([]byte(resp.String()), &repositories)
 
 	for _, repo := range repositories {
-		if repo.RepoCode == Code {
+		if client.Identify(repo) == Code {
 			return repo, nil
 		}
 	}
