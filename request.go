@@ -1,12 +1,12 @@
 package asclient
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/url"
 
 	"github.com/go-resty/resty/v2"
+	"github.com/google/go-querystring/query"
 )
 
 type PayLoadRequest struct {
@@ -17,15 +17,17 @@ type PayLoadRequest struct {
 }
 
 type QueryParams struct {
-	AllIds             string `json:"all_ids,omitempty"`
-	IdSet              string `json:"id_set,omitempty"`
-	IncludeDAOS        string `json:"include_daos,omitempty"`
-	IncludeUnpublished string `json:"include_unpublished,omitempty"`
-	ModifiedSince      string `json:"modified_since,omitempty"`
-	NumberedCS         string `json:"numbered_cs,omitempty"`
-	Page               string `json:"page,omitempty"`
-	Password           string `json:"password,omitempty"`
-	PrintPDF           string `json:"print_pdf,omitempty"`
+	AllIds             bool     `url:"all_ids,omitempty"`
+	Identifier         []string `url:"identifier,omitempty,brackets"`
+	IdSet              string   `url:"id_set,omitempty"`
+	IncludeDAOS        string   `url:"include_daos,omitempty"`
+	IncludeUnpublished bool     `url:"include_unpublished,omitempty"`
+	ModifiedSince      string   `url:"modified_since,omitempty"`
+	NumberedCS         bool     `url:"numbered_cs,omitempty"`
+	Page               int      `url:"page,omitempty"`
+	Password           string   `url:"password,omitempty"`
+	PrintPDF           bool     `url:"print_pdf,omitempty"`
+	Query              string   `url:"q,omitempty"`
 }
 
 func (client *APIClient) BuildUrl(path string) (string, error) {
@@ -50,13 +52,6 @@ func (client *APIClient) CheckResponse(resp *resty.Response, err error) (*resty.
 	return resp, nil
 }
 
-func (client *APIClient) ConvertParams(params QueryParams) (map[string]string, error) {
-	var queryStringParams map[string]string
-	data, _ := json.Marshal(params)
-	json.Unmarshal(data, &queryStringParams)
-	return queryStringParams, nil
-}
-
 func (client *APIClient) Delete(path string) (*resty.Response, error) {
 	url, _ := client.BuildUrl(path)
 
@@ -69,11 +64,11 @@ func (client *APIClient) Delete(path string) (*resty.Response, error) {
 
 func (client *APIClient) Get(path string, params QueryParams) (*resty.Response, error) {
 	url, _ := client.BuildUrl(path)
-	queryStringParams, _ := client.ConvertParams(params)
+	q, _ := query.Values(params)
 
 	resp, err := client.API.R().
 		SetHeaders(client.Headers).
-		SetQueryParams(queryStringParams).
+		SetQueryString(q.Encode()).
 		Get(url)
 
 	return client.CheckResponse(resp, err)
@@ -103,13 +98,13 @@ func (client *APIClient) Put(path string, payload string, params QueryParams) (*
 
 func (client *APIClient) RequestWithPayload(request PayLoadRequest) (*resty.Response, error) {
 	url, _ := client.BuildUrl(request.Path)
-	queryStringParams, _ := client.ConvertParams(request.Params)
+	q, _ := query.Values(request.Params)
 
 	resp, err := client.API.R().
 		SetHeaders(client.Headers).
 		SetContentLength(true).
 		SetBody(request.Payload).
-		SetQueryParams(queryStringParams).
+		SetQueryString(q.Encode()).
 		Execute(request.Method, url)
 
 	return resp, err

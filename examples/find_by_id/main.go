@@ -1,10 +1,8 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
-	"time"
 
 	"github.com/mark-cooper/asclient"
 )
@@ -17,10 +15,9 @@ func main() {
 	}
 	client := asclient.NewAPIClient(cfg)
 	client.Login()
-
-	resp, err := client.Get("repositories/2/resources", asclient.QueryParams{
-		AllIds:        true,
-		ModifiedSince: asclient.ModifiedSince(time.Hour * 24),
+	resp, err := client.Get("repositories/2/find_by_id/resources", asclient.QueryParams{
+		// ASpace API is confused / confusing here (value must be array formatted string)
+		Identifier: []string{"[\"Mss002\"]"},
 	})
 
 	if err != nil {
@@ -28,8 +25,5 @@ func main() {
 		os.Exit(1)
 	}
 
-	var ids []int
-	json.Unmarshal([]byte(resp.String()), &ids)
-
-	fmt.Println(ids)
+	fmt.Println(resp.String())
 }
