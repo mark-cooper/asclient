@@ -23,7 +23,9 @@ func main() {
 	ids := FetchIds(srcClient, srcRepo)
 
 	for _, id := range ids {
-		resp, err := srcClient.Get(srcRepo.URI+"/resources/"+fmt.Sprint(id), asclient.QueryParams{})
+		resp, err := srcClient.Get(
+			fmt.Sprintf("%s/resources/%d", srcRepo.URI, id), asclient.QueryParams{},
+		)
 		if err != nil {
 			fmt.Println(err)
 			continue
@@ -34,7 +36,7 @@ func main() {
 }
 
 func FetchIds(client *asclient.APIClient, repo *asclient.Repository) []int {
-	resp, err := client.Get(repo.URI+"/resources", asclient.QueryParams{
+	resp, err := client.Get(fmt.Sprintf("%s/resources", repo.URI), asclient.QueryParams{
 		AllIds:        true,
 		ModifiedSince: asclient.ModifiedSince(time.Hour * (24 * 7)),
 	})
